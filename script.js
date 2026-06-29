@@ -7,7 +7,17 @@ const loginRegisterInfo = () => {
   let register = document.querySelector(".register");
   let loginHere = document.querySelector(".loginhere");
   let registerHere = document.querySelector(".registerhere");
-  registerForm.addEventListener("submit", () => {
+  let dashboard = document.querySelector(".app-container")
+  let loginRegister = document.querySelector(".loginregister");
+  let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+  if (currentUser) {
+    loginRegister.style.display = "none";
+    dashboard.style.display = "flex";
+  }
+
+  registerForm.addEventListener("submit", (e) => {
+    e.preventDefault()
     let username = registerForm[0].value;
     let password = registerForm[1].value;
 
@@ -22,33 +32,65 @@ const loginRegisterInfo = () => {
     alert("Registration Successfull");
   });
 
-  loginForm.addEventListener("submit", () => {
+
+  loginForm.addEventListener("submit", (e) => {
+    e.preventDefault()
     let username = loginForm[0].value;
     let password = loginForm[1].value;
 
     const user = users.find((item) => {
       return item.username === username && item.password === password;
     });
+    localStorage.setItem("currentUser", JSON.stringify(user));
 
-    if (user) {
+
+    let currentUser = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (currentUser) {
+      ;
+
       alert("login Successfull");
-      login.style.display = "none";
+      loginRegister.style.display = "none";
       register.style.display = "none";
+      dashboard.style.display = "flex"
+
     } else {
       alert("Please Register First");
     }
+    console.log(currentUser)
   });
 
-  loginHere.addEventListener("click", () => {
+
+  loginHere.addEventListener("click", (e) => {
+    e.preventDefault()
     login.style.display = "flex";
     register.style.display = "none";
+
   });
 
-  registerHere.addEventListener("click", () => {
+  registerHere.addEventListener("click", (e) => {
+    e.preventDefault()
     login.style.display = "none";
     register.style.display = "flex";
   });
+
+
 };
+
+
+let logoutBtn = document.querySelector(".logout-btn");
+
+logoutBtn.addEventListener("click", () => {
+
+    localStorage.removeItem("currentUser");
+
+    document.querySelector(".loginregister").style.display = "flex";
+    document.querySelector(".app-container").style.display = "none";
+
+    document.querySelector(".login").style.display = "flex";
+    document.querySelector(".register").style.display = "none";
+
+});
 
 /// ************************
 
@@ -135,7 +177,7 @@ const expense = () => {
     let date = e.target[3].value;
     let catagory = e.target[4].value;
 
-    const obj={
+    const obj = {
       id: Date.now(),
       type,
       description,
@@ -143,12 +185,12 @@ const expense = () => {
       date,
       catagory,
     };
-if(updateTask != null){
-        expenseArr[updateTask]=obj
-        updateTask=null
+    if (updateTask != null) {
+      expenseArr[updateTask] = obj
+      updateTask = null
     }
-    else{
-        expenseArr.push(obj)
+    else {
+      expenseArr.push(obj)
 
     }
 
@@ -165,21 +207,21 @@ const editTable = (id) => {
   addTransectionDiv.style.display = "flex";
   const edit = expenseArr.find(elem => Number(elem.id) === Number(id));
   updateTask = expenseArr.findIndex(elem => Number(elem.id) === Number(id));
-  updateTask= expenseArr.findIndex(elem=>elem.id==id)
-  transectionForm[0].value=edit.type
-  transectionForm[1].value=edit.description
-  transectionForm[2].value=edit.amount
-  transectionForm[3].value=edit.date
-  transectionForm[4].value=edit.catagory
+  updateTask = expenseArr.findIndex(elem => elem.id == id)
+  transectionForm[0].value = edit.type
+  transectionForm[1].value = edit.description
+  transectionForm[2].value = edit.amount
+  transectionForm[3].value = edit.date
+  transectionForm[4].value = edit.catagory
 }
 
-const deleteTask=(index)=>{
+const deleteTask = (index) => {
 
- expenseArr.splice(index,1)
- localStorage.setItem("expense", JSON.stringify(expenseArr));
- updateCards();
- expense();
-   
+  expenseArr.splice(index, 1)
+  localStorage.setItem("expense", JSON.stringify(expenseArr));
+  updateCards();
+  expense();
+
 }
 
 
@@ -187,17 +229,17 @@ const deleteTask=(index)=>{
 
 
 
-let settings=document.querySelector(".setting")
+let settings = document.querySelector(".setting")
 let dashboardBtn = document.querySelector(".dashboard-btn")
 let settingBtn = document.querySelector(".setting-btn")
-let midContent =document.querySelector("#mid-content")
-let prodileName =document.querySelector(".name")
+let midContent = document.querySelector("#mid-content")
+let prodileName = document.querySelector(".name")
 
 
-settingBtn.addEventListener("click",()=>{
-    midContent.style.display="none"
-    settings.style.display="block"
-        
+settingBtn.addEventListener("click", () => {
+  midContent.style.display = "none"
+  settings.style.display = "block"
+
 
 
 
@@ -219,4 +261,4 @@ settingBtn.addEventListener("click",()=>{
 expense();
 updateCards();
 
-// loginRegisterInfo()
+loginRegisterInfo()
